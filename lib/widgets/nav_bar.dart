@@ -67,11 +67,11 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         decoration: InputDecoration(
           isDense: true,
           filled: true,
-          suffixIconConstraints: BoxConstraints(minWidth: 30, minHeight: 30),
+          suffixIconConstraints: BoxConstraints(minWidth: 24, minHeight: 24),
           suffixIcon: Padding(
-            padding: const EdgeInsets.only(right: 4.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: SuryaIcon(
-              size: 18,
+              size: 24,
               strokeWidth: 1,
               icon: SIDuotone.search01,
               color: color,

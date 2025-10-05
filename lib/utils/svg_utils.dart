@@ -1,3 +1,5 @@
+import 'package:suryaicons_app/utils/camel_case.dart';
+
 class SvgUtils {
   static const keys = [
     "stroke-width",
@@ -20,11 +22,13 @@ class SvgUtils {
     List<List<dynamic>> icon,
     String colorHex, {
     double? strokeWidth,
+    required String name,
     required int variant,
   }) {
+    final className = toCamelCase(name, capitalizeFirst: true);
     final buffer = StringBuffer();
     buffer.write(
-      'const DocumentAttachmentIcon = (\nprops: React.SVGProps<SVGSVGElement> & { size?: string | number',
+      'const $className = (\nprops: React.SVGProps<SVGSVGElement> & { size?: string | number',
     );
     if (supportsColor2(variant)) {
       buffer.write(', color2?: string, opacity2?: number');
@@ -50,17 +54,19 @@ class SvgUtils {
     buffer.write(svg);
     buffer.write('  );');
     buffer.write('\n};\n');
+    buffer.write('export default $className;\n');
     return buffer.toString();
   }
 
   static String flutterWidget(
     List<List<dynamic>> icon,
     String colorHex, {
+    required String name,
     double? strokeWidth,
     required int variant,
   }) {
     final buffer = StringBuffer();
-    const className = "DocumentAttachmentIcon";
+    final className = toCamelCase(name, capitalizeFirst: true);
     final hexaClr = '0xFF${colorHex.substring(1)}';
     buffer.write("import 'package:flutter/material.dart';\n");
     buffer.write("import 'package:flutter_svg/flutter_svg.dart';\n\n");
@@ -120,11 +126,13 @@ class SvgUtils {
     String colorHex, {
     double? strokeWidth,
     required int variant,
+    required String name,
   }) {
     final buffer = StringBuffer();
+    final className = toCamelCase(name, capitalizeFirst: true);
     buffer.write("import { Component, Input } from '@angular/core';\n\n");
     buffer.write('@Component({\n');
-    buffer.write("  selector: 'app-document-attachment-icon',\n");
+    buffer.write("  selector: '$name',\n");
     buffer.write("  template: `\n");
     buffer.write(
       BuildSvg(
@@ -134,14 +142,14 @@ class SvgUtils {
         opacity: 'opacity',
         strokeWidth: 'strokeWidth',
         size: 'size',
-        generateVariable: (v) => '{{${v}}}',
+        generateVariable: (v) => '{{$v}}',
         indentationStart: 2,
         useCamelCase: false,
       ).run(),
     );
     buffer.write("  `,\n");
     buffer.write('})\n');
-    buffer.write('export class DocumentAttachmentIconComponent {\n');
+    buffer.write('export class $className {\n');
 
     buffer.write('  @Input() color: string = "$colorHex";\n');
     buffer.write('  @Input() size: number = 24;\n');
@@ -163,6 +171,7 @@ class SvgUtils {
     double? opacity = 0.4,
     double? strokeWidth,
     required int variant,
+    required String name,
   }) {
     final buffer = StringBuffer();
     buffer.write('<script>\n');
@@ -200,12 +209,10 @@ class SvgUtils {
     String colorHex, {
     double? strokeWidth,
     required int variant,
+    required String name,
   }) {
     final buffer = StringBuffer();
     buffer.write('<script setup lang="ts">\n');
-    // buffer.write(
-    //   'defineProps<{ color?: string; size?: number; strokeWidth?: number }>();\n',
-    // );
     buffer.write('const props = defineProps<{ color?: string; size?: number');
     if (supportsStrokeWidth(variant)) {
       buffer.write('; strokeWidth?: number');
@@ -225,7 +232,7 @@ class SvgUtils {
         opacity: 'opacity || 0.4',
         strokeWidth: 'strokeWidth || 1.5',
         size: 'size || 24',
-        generateVariable: (v) => ':{${v}}',
+        generateVariable: (v) => ':{$v}',
         indentationStart: 0,
         useCamelCase: false,
       ).run(),

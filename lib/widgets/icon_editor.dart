@@ -7,6 +7,7 @@ import 'package:suryaicons/bulk_rounded.dart';
 import 'package:suryaicons/suryaicons.dart';
 import 'package:suryaicons/twotone_rounded.dart';
 import 'package:suryaicons_app/screens/home.dart';
+import 'package:suryaicons_app/utils/camel_case.dart';
 import 'package:suryaicons_app/utils/color.dart';
 import 'package:suryaicons_app/utils/options.dart';
 import 'package:suryaicons_app/utils/search.dart';
@@ -34,7 +35,7 @@ class IconEditor extends StatefulWidget {
 class _IconEditorState extends State<IconEditor> {
   late Color iconColor = widget.color;
   late Color secondColor = iconColor;
-  final GlobalKey<CustomPopupState> _keyPickerKey1 = GlobalKey();
+  // final GlobalKey<CustomPopupState> _keyPickerKey1 = GlobalKey();
   final GlobalKey<CustomPopupState> _keyPickerKey2 = GlobalKey();
   double opacity = 0.4;
   double strokeWidth = 1.5;
@@ -65,6 +66,7 @@ class _IconEditorState extends State<IconEditor> {
 
   String getText(String value) {
     final icon = iconSets[variantIndex][widget.iconIndex];
+    final name = SearchManager.dataset![widget.iconIndex]['n'] as String;
     if (value == "Svg") {
       return SuryaIcon(
         color2: secondColor,
@@ -76,40 +78,37 @@ class _IconEditorState extends State<IconEditor> {
     } else if (value == "React Code") {
       return SvgUtils.reactComponent(
         icon,
-        iconColor.toHex(includeAlpha: false),
+        iconColor.toHex(),
         variant: variantIndex,
+        name: name,
       );
-    } else if (value == "React Icon") {
-      // return SvgUtils.reactIcon(
-      //   icon,
-      //   iconColor.toHex(includeAlpha: false),
-      //   strokeWidth,
-      // );
-      return "";
     } else if (value == "Flutter Code") {
       return SvgUtils.flutterWidget(
         icon,
-        iconColor.toHex(includeAlpha: false),
+        iconColor.toHex(),
         variant: variantIndex,
+        name: name,
       );
-    } else if (value == "Flutter Icon") {
-      // return SvgUtils.flutterIcon(
-      //   icon,
-      //   iconColor.toHex(includeAlpha: false),
-      //   strokeWidth,
-      // );
-      return "";
     } else if (value == "Svelte") {
       return SvgUtils.svelteComponent(
         icon,
-        iconColor.toHex(includeAlpha: false),
+        iconColor.toHex(),
         variant: variantIndex,
+        name: name,
       );
     } else if (value == "Angular") {
       return SvgUtils.angularComponent(
         icon,
-        iconColor.toHex(includeAlpha: false),
+        iconColor.toHex(),
         variant: variantIndex,
+        name: name,
+      );
+    } else if (value == "Vue") {
+      return SvgUtils.vueComponent(
+        icon,
+        iconColor.toHex(),
+        variant: variantIndex,
+        name: name,
       );
     } else {
       return "";
@@ -140,6 +139,7 @@ class _IconEditorState extends State<IconEditor> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Main Icon Display
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -161,82 +161,44 @@ class _IconEditorState extends State<IconEditor> {
                 ),
                 const SizedBox(width: 40),
                 IntrinsicWidth(
-                  child: Container(
+                  child: SizedBox(
                     height: 220,
-                    // color: Colors.red,
                     child: Column(
-                      // mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        /// Icon Title
                         Text(
-                          SearchManager.dataset![widget.iconIndex]['n']
-                              as String,
+                          toCamelCase(
+                            SearchManager.dataset![widget.iconIndex]['n']
+                                as String,
+                            capitalizeFirst: true,
+                          ),
                           style: const TextStyle(fontSize: 22),
                         ),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            _buildIconBtn(
-                              icon: Container(
-                                height: 14,
-                                width: 14,
-                                decoration: BoxDecoration(
-                                  color: iconColor,
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: Colors.white24),
+                            /// Color1
+                            SizedBox(
+                              width: 110,
+                              child: _buildIconBtn(
+                                icon: Container(
+                                  height: 14,
+                                  width: 14,
+                                  decoration: BoxDecoration(
+                                    color: iconColor,
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: Colors.white24),
+                                  ),
                                 ),
+                                onPressed: () => handleColorPicker(1),
+                                label: iconColor.toHex(),
                               ),
-                              onPressed: () => handleColorPicker(1),
-                              // label: iconColor.toHex(includeAlpha: false),
-                              label: iconColor.toHex(),
                             ),
                             const SizedBox(width: 12),
 
-                            // Container(
-                            //   width: 72,
-                            //   height: 30,
-                            //   padding: const EdgeInsets.symmetric(
-                            //     horizontal: 10,
-                            //     vertical: 4,
-                            //   ),
-                            //   decoration: BoxDecoration(
-                            //     border: Border.all(color: Colors.white24),
-                            //     borderRadius: BorderRadius.circular(6),
-                            //   ),
-                            //   child: DropdownButton(
-                            //     isExpanded: true,
-                            //     underline: SizedBox(),
-                            //     style: const TextStyle(
-                            //       color: Color.fromARGB(255, 188, 188, 188),
-                            //       fontSize: 14,
-                            //     ),
-                            //     borderRadius: BorderRadius.circular(6),
-                            //     icon: SuryaIcon(
-                            //       icon: SIBulk.menu03,
-                            //       size: 15,
-                            //       color: Colors.white,
-                            //     ),
-
-                            //     onTap: () {
-                            //       debugPrint("tapped dropdown");
-                            //     },
-                            //     items: [
-                            //       DropdownMenuItem(child: Text("0.5"), value: 0.5),
-                            //       DropdownMenuItem(child: Text("1"), value: 1.0),
-                            //       DropdownMenuItem(child: Text("1.5"), value: 1.5),
-                            //       DropdownMenuItem(child: Text("2"), value: 2.0),
-                            //       DropdownMenuItem(child: Text("2.5"), value: 2.5),
-                            //       DropdownMenuItem(child: Text("3"), value: 3.0),
-                            //     ],
-                            //     onChanged: (value) {
-                            //       setState(() {
-                            //         strokeWidth = value ?? 1.5;
-                            //       });
-                            //     },
-                            //     value: strokeWidth,
-                            //   ),
-                            // ),
+                            /// Stroke Width
                             Container(
                               height: 32,
                               padding: const EdgeInsets.symmetric(
@@ -253,7 +215,6 @@ class _IconEditorState extends State<IconEditor> {
                                     Icons.line_weight,
                                     size: 16,
                                     color: widget.color,
-                                    // color: Colors.white,
                                   ),
                                   SizedBox(width: 12),
                                   Expanded(
@@ -265,11 +226,6 @@ class _IconEditorState extends State<IconEditor> {
                                           variantIndex < 1 || variantIndex > 5
                                           ? null
                                           : (value) {
-                                              // if ()
-                                              //   return;
-                                              debugPrint(
-                                                "setting strokeWidth: $value",
-                                              );
                                               setState(() {
                                                 strokeWidth = value;
                                               });
@@ -284,8 +240,6 @@ class _IconEditorState extends State<IconEditor> {
                                 ],
                               ),
                             ),
-
-                            // SizedBox(width: 4),
                           ],
                         ),
                         if (variantIndex < 3) ...[
@@ -293,21 +247,25 @@ class _IconEditorState extends State<IconEditor> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              _buildIconBtn(
-                                icon: Container(
-                                  height: 14,
-                                  width: 14,
-                                  decoration: BoxDecoration(
-                                    color: secondColor,
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(color: Colors.white24),
+                              /// Color2
+                              SizedBox(
+                                width: 110,
+                                child: _buildIconBtn(
+                                  icon: Container(
+                                    height: 14,
+                                    width: 14,
+                                    decoration: BoxDecoration(
+                                      color: secondColor,
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(color: Colors.white24),
+                                    ),
                                   ),
+                                  onPressed: () => handleColorPicker(2),
+                                  label: secondColor.toHex(),
                                 ),
-                                onPressed: () => handleColorPicker(2),
-                                label: secondColor.toHex(),
                               ),
                               const SizedBox(width: 12),
-                              // range bar
+                              // Color2 Opacity
                               Container(
                                 height: 32,
                                 padding: EdgeInsets.symmetric(horizontal: 8),
@@ -323,11 +281,6 @@ class _IconEditorState extends State<IconEditor> {
                                       color: widget.color,
                                       size: 22,
                                     ),
-                                    // Icon(
-                                    //   Icons.opacity,
-                                    //   size: 16,
-                                    //   color: Colors.white,
-                                    // ),
                                     SizedBox(width: 12),
                                     Expanded(
                                       child: Slider(
@@ -336,9 +289,7 @@ class _IconEditorState extends State<IconEditor> {
                                         min: 0,
                                         max: 1,
                                         activeColor: widget.color,
-                                        //   onChanged: (value) {
                                         divisions: 10,
-                                        //     5, // optional (steps: 0.5, 1, 1.5, 2, 2.5, 3)
                                         label: opacity.toStringAsFixed(1),
                                         onChanged: (value) {
                                           setState(() {
@@ -360,29 +311,7 @@ class _IconEditorState extends State<IconEditor> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            // buildSplitButton(
-                            //   key: _keyPickerKey1,
-                            //   icon: SuryaIcon(
-                            //     icon: SIBulk.download01,
-                            //     color: widget.color,
-                            //     size: 16,
-                            //   ),
-                            //   label: downloadType,
-                            //   onPressed: () {
-                            //     print("Main action: Save");
-                            //   },
-                            //   onMenuItemSelected: (value) {
-                            //     print("Menu selected: $value");
-                            //   },
-                            //   menuItems: [
-                            //     "Svg",
-                            //     "React Component",
-                            //     "React Icon",
-                            //     "Flutter Widget",
-                            //     "Flutter Icon",
-                            //   ],
-                            // ),
-                            // const SizedBox(width: 12),
+                            // Copy Button
                             buildSplitButton(
                               key: _keyPickerKey2,
                               icon: SuryaIcon(
@@ -401,31 +330,16 @@ class _IconEditorState extends State<IconEditor> {
                               },
                               menuItems: [
                                 "Svg",
-                                "React Code",
-                                "React Icon",
-                                "Flutter Code",
-                                "Flutter Icon",
+                                "React",
+                                "Flutter",
                                 "Svelte",
                                 "Angular",
+                                // "Flutter Icon",
+                                // "React Icon",
                               ],
                             ),
                           ],
                         ),
-                        // _buildIconBtn(
-                        //   onPressed: () {
-                        //     final icon =
-                        //         iconSets[variantIndex][widget.iconIndex];
-                        //     final reactComp = SvgUtils.test(icon);
-                        //     Clipboard.setData(ClipboardData(text: reactComp));
-                        //   },
-                        //   icon: SuryaIcon(
-                        //     icon: SIBulk.code,
-                        //     color: Colors.white,
-                        //     size: 14,
-                        //   ),
-                        //   label: 'Test',
-                        // ),
-                        // DocumentAttachmentIcon(),
                       ],
                     ),
                   ),
@@ -500,8 +414,11 @@ class _IconEditorState extends State<IconEditor> {
     required Widget icon,
     required GlobalKey<CustomPopupState> key,
   }) {
-    const clr = Color.fromARGB(32, 228, 209, 217);
-    // const clr = Color.fromARGB(33, 24, 5, 13);
+    final darkTheme =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final clr = darkTheme
+        ? const Color.fromARGB(32, 24, 5, 13)
+        : const Color.fromARGB(32, 228, 209, 217);
     return Container(
       height: 32,
       decoration: BoxDecoration(
