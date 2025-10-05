@@ -6,15 +6,15 @@
 
 - it has total 9 variants:
 
-  1. Solid
-  2. SolidRounded
-  3. SolidSharp
-  4. Stroke
-  5. StrokeRounded
-  6. StrokeSharp
-  7. TwoToneRounded
-  8. DuoToneRounded
-  9. BulkRounded
+  - Solid
+  - SolidRounded
+  - SolidSharp
+  - Stroke
+  - StrokeRounded
+  - StrokeSharp
+  - TwoToneRounded
+  - DuoToneRounded
+  - BulkRounded
 
 - it has following properties:
 
@@ -24,10 +24,14 @@
   - color2
   - opacity
 
-`size` and `color` supports for all 9 variants.
+- `size` and `color` supports for all 9 variants.
+- `strokeWidth` only supports for 5 variants: `Stroke`, `StrokeRounded`, `StrokeSharp`, `TwoToneRounded`, `DuoToneRounded`.
+- `color2` and `opacity` only supports for 3 variants: `TwoToneRounded`, `DuoToneRounded`, `BulkRounded`.
+- note `opacity` is for `color2`. not for entire icon.
 
-`strokeWidth` only supports for 5 variants: `Stroke`, `StrokeRounded`, `StrokeSharp`, `TwoToneRounded`, `DuoToneRounded`.
+## Packages/Libraries:
 
-`color2` and `opacity` only supports for 3 variants: `TwoToneRounded`, `DuoToneRounded`, `BulkRounded`.
+### Flutter
 
-note `opacity` is for `color2`. not for entire icon.
+- `pub` : [suryaicons](https://pub.dev/packages/suryaicons)
+- `github` : [suryaicons_flutter](https://github.com/suryasarisa99/suryaicons_flutter)
