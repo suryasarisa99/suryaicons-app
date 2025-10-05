@@ -40,8 +40,18 @@ class _IconEditorState extends State<IconEditor> {
   double opacity = 0.4;
   double strokeWidth = 1.5;
   String copyType = Options.copyType;
+  late String fixedName;
+  late bool nameIsDiff = false;
   String downloadType = "Svg";
   late int variantIndex = widget.variantIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    final name = SearchManager.dataset![widget.iconIndex]['n'] as String;
+    fixedName = getFixedName(name);
+    nameIsDiff = fixedName != name ? true : false;
+  }
 
   handleColorPicker(int which) {
     showColorPicker(
@@ -64,9 +74,35 @@ class _IconEditorState extends State<IconEditor> {
     );
   }
 
+  String getFixedName(String value) {
+    String name = SearchManager.dataset![widget.iconIndex]['n'] as String;
+    if (int.tryParse(name[0]) != null) {
+      if (name.startsWith('1st')) {
+        name = 'First${name.substring(3)}';
+      } else if (name.startsWith('2nd')) {
+        name = 'Second${name.substring(3)}';
+      } else if (name.startsWith('3rd')) {
+        name = 'Third${name.substring(3)}';
+      } else if (name.startsWith('4th')) {
+        name = 'Fourth${name.substring(3)}';
+      } else if (name.startsWith('5th')) {
+        name = 'Fifth${name.substring(3)}';
+      } else if (name[0] == '3') {
+        name = 'Three${name.substring(1)}';
+      } else if (name[0] == '2') {
+        name = 'Two${name.substring(1)}';
+      } else if (name[0] == '4') {
+        name = 'Four${name.substring(1)}';
+      } else if (name[0] == '7') {
+        name = 'Seven${name.substring(1)}';
+      }
+    }
+    return name;
+  }
+
   String getText(String value) {
     final icon = iconSets[variantIndex][widget.iconIndex];
-    final name = SearchManager.dataset![widget.iconIndex]['n'] as String;
+    final name = fixedName;
     if (value == "Svg") {
       return SuryaIcon(
         color2: secondColor,
@@ -75,14 +111,14 @@ class _IconEditorState extends State<IconEditor> {
         size: 16,
         strokeWidth: strokeWidth,
       ).buildSvgFromJson();
-    } else if (value == "React Code") {
+    } else if (value == "React") {
       return SvgUtils.reactComponent(
         icon,
         iconColor.toHex(),
         variant: variantIndex,
         name: name,
       );
-    } else if (value == "Flutter Code") {
+    } else if (value == "Flutter") {
       return SvgUtils.flutterWidget(
         icon,
         iconColor.toHex(),
@@ -111,12 +147,14 @@ class _IconEditorState extends State<IconEditor> {
         name: name,
       );
     } else {
+      debugPrint("value not matched: $value");
       return "";
     }
   }
 
   void handleCopy(String value) {
     final text = getText(value);
+    debugPrint('handle copy: $text');
     Clipboard.setData(ClipboardData(text: text));
   }
 
@@ -167,13 +205,26 @@ class _IconEditorState extends State<IconEditor> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Icon Title
-                        Text(
-                          toCamelCase(
-                            SearchManager.dataset![widget.iconIndex]['n']
-                                as String,
-                            capitalizeFirst: true,
-                          ),
-                          style: const TextStyle(fontSize: 22),
+                        Row(
+                          children: [
+                            Text(
+                              toCamelCase(
+                                SearchManager.dataset![widget.iconIndex]['n']
+                                    as String,
+                                capitalizeFirst: true,
+                              ),
+                              style: TextStyle(fontSize: nameIsDiff ? 16 : 22),
+                            ),
+                            SizedBox(width: 8),
+                            if (nameIsDiff)
+                              Text(
+                                toCamelCase(fixedName),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white54,
+                                ),
+                              ),
+                          ],
                         ),
                         const SizedBox(height: 12),
                         Row(
